@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="60" fill="#4dabf7" stroke="#339af0" stroke-width="2"/>
+  
+  <!-- Clock face background -->
+  <circle cx="64" cy="64" r="45" fill="#ffffff" stroke="#e9ecef" stroke-width="1"/>
+  
+  <!-- Hour markers -->
+  <g stroke="#6c757d" stroke-width="2" stroke-linecap="round">
+    <!-- 12 o'clock -->
+    <line x1="64" y1="24" x2="64" y2="30"/>
+    <!-- 3 o'clock -->
+    <line x1="104" y1="64" x2="98" y2="64"/>
+    <!-- 6 o'clock -->
+    <line x1="64" y1="104" x2="64" y2="98"/>
+    <!-- 9 o'clock -->
+    <line x1="24" y1="64" x2="30" y2="64"/>
+  </g>
+  
+  <!-- Smaller hour markers -->
+  <g stroke="#adb5bd" stroke-width="1" stroke-linecap="round">
+    <!-- 1 o'clock -->
+    <line x1="86.6" y1="31.4" x2="84.8" y2="33.2"/>
+    <!-- 2 o'clock -->
+    <line x1="96.6" y1="47.4" x2="94.8" y2="49.2"/>
+    <!-- 4 o'clock -->
+    <line x1="96.6" y1="80.6" x2="94.8" y2="78.8"/>
+    <!-- 5 o'clock -->
+    <line x1="86.6" y1="96.6" x2="84.8" y2="94.8"/>
+    <!-- 7 o'clock -->
+    <line x1="41.4" y1="96.6" x2="43.2" y2="94.8"/>
+    <!-- 8 o'clock -->
+    <line x1="31.4" y1="80.6" x2="33.2" y2="78.8"/>
+    <!-- 10 o'clock -->
+    <line x1="31.4" y1="47.4" x2="33.2" y2="49.2"/>
+    <!-- 11 o'clock -->
+    <line x1="41.4" y1="31.4" x2="43.2" y2="33.2"/>
+  </g>
+  
+  <!-- Clock hands pointing to 2 minutes (2:00) -->
+  <!-- Hour hand pointing to 2 -->
+  <line x1="64" y1="64" x2="78" y2="48" stroke="#2c3e50" stroke-width="4" stroke-linecap="round"/>
+  
+  <!-- Minute hand pointing to 12 -->
+  <line x1="64" y1="64" x2="64" y2="35" stroke="#2c3e50" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Center dot -->
+  <circle cx="64" cy="64" r="4" fill="#2c3e50"/>
+  
+  <!-- "2" number highlight -->
+  <text x="78" y="52" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#e74c3c" text-anchor="middle">2</text>
+  
+  <!-- Warning/close indicator -->
+  <g transform="translate(95, 25)">
+    <circle r="12" fill="#e74c3c" stroke="#ffffff" stroke-width="2"/>
+    <g stroke="#ffffff" stroke-width="2.5" stroke-linecap="round">
+      <line x1="-6" y1="-6" x2="6" y2="6"/>
+      <line x1="6" y1="-6" x2="-6" y2="6"/>
+    </g>
+  </g>
+  
+  <!-- Small "min" text -->
+  <text x="64" y="85" font-family="Arial, sans-serif" font-size="10" font-weight="normal" fill="#6c757d" text-anchor="middle">min</text>
+</svg>

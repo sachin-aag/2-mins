@@ -1,0 +1,315 @@
+/* Popup styles for 2 mins only Chrome extension */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #333;
+  background: #f8f9fa;
+  min-height: 500px;
+}
+
+.container {
+  width: 350px;
+  padding: 16px;
+}
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: #6c757d;
+  font-weight: 400;
+}
+
+/* Sections */
+h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.status-section, .config-section {
+  margin-bottom: 24px;
+}
+
+/* Active Timers */
+.active-timers {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.no-timers {
+  padding: 16px;
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.timer-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f8f9fa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.timer-item:last-child {
+  border-bottom: none;
+}
+
+.timer-info {
+  flex: 1;
+}
+
+.timer-site {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 13px;
+}
+
+.timer-remaining {
+  font-size: 11px;
+  color: #e74c3c;
+  font-weight: 500;
+}
+
+/* Add Site Form */
+.add-site {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.input-field {
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 13px;
+  background: white;
+  transition: border-color 0.2s;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #4dabf7;
+  box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.2);
+}
+
+.input-field:first-child {
+  flex: 1;
+}
+
+.minutes-input {
+  width: 70px;
+}
+
+/* Buttons */
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary {
+  background: #4dabf7;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #339af0;
+}
+
+.btn-secondary {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.btn-secondary:hover {
+  background: #dee2e6;
+}
+
+.btn-danger {
+  background: #e74c3c;
+  color: white;
+  padding: 4px 8px;
+  font-size: 11px;
+}
+
+.btn-danger:hover {
+  background: #c0392b;
+}
+
+/* Site List */
+.site-list {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.site-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f8f9fa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.site-item:last-child {
+  border-bottom: none;
+}
+
+.site-info {
+  flex: 1;
+}
+
+.site-name {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 13px;
+}
+
+.site-timer {
+  font-size: 11px;
+  color: #6c757d;
+}
+
+.site-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.edit-input {
+  width: 50px;
+  padding: 4px 6px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 11px;
+  text-align: center;
+}
+
+/* Cooldown Section */
+.cooldown-section {
+  margin-bottom: 24px;
+}
+
+.cooldown-controls {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  padding: 16px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.checkbox {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.cooldown-duration {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #495057;
+}
+
+.cooldown-duration label {
+  font-weight: 500;
+  min-width: 100px;
+}
+
+.duration-input {
+  width: 70px;
+  text-align: center;
+}
+
+.duration-unit {
+  color: #6c757d;
+  font-size: 12px;
+}
+
+/* Actions */
+.actions {
+  text-align: center;
+  padding-top: 16px;
+  border-top: 1px solid #e9ecef;
+}
+
+/* Utilities */
+.hidden {
+  display: none !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-muted {
+  color: #6c757d;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
