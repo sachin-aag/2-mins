@@ -5,6 +5,9 @@ const STORAGE_KEY = 'site_timers';
 const ACTIVE_TIMERS_KEY = 'active_timers';
 const BLOCKED_SITES_KEY = 'blocked_sites';
 const COOLDOWN_SETTINGS_KEY = 'cooldown_settings';
+const WHITELIST_CHANNELS_KEY = 'whitelist_channels';
+const WHITELIST_VIDEOS_KEY = 'whitelist_videos';
+const LEARNING_MODE_KEY = 'learning_mode';
 
 // Default sites with timer configurations (in minutes)
 const DEFAULT_SITES = {
@@ -23,30 +26,100 @@ const DEFAULT_COOLDOWN_SETTINGS = {
   durationMinutes: 60  // 1 hour default
 };
 
+// Default educational channels (popular learning channels)
+const DEFAULT_WHITELIST_CHANNELS = [
+  'youtube.com/c/khanacademy',
+  'youtube.com/c/crashcourse',
+  'youtube.com/c/3blue1brown',
+  'youtube.com/c/TED',
+  'youtube.com/c/TEDEd',
+  'youtube.com/c/Coursera',
+  'youtube.com/c/edx',
+  'youtube.com/c/MITOpenCourseWare',
+  'youtube.com/c/StanfordOnline',
+  'youtube.com/c/HarvardOnline'
+];
+
+// Default educational videos (including user's marketing video)
+const DEFAULT_WHITELIST_VIDEOS = [
+  'https://www.youtube.com/watch?v=gWNFna6fgS8' // User's marketing learning video
+];
+
+// Educational keywords for smart detection
+const EDUCATIONAL_KEYWORDS = [
+  'tutorial', 'course', 'learn', 'education', 'how to', 'explained', 
+  'masterclass', 'lesson', 'training', 'workshop', 'lecture', 'study',
+  'guide', 'tips', 'strategy', 'business', 'marketing', 'programming',
+  'coding', 'development', 'design', 'productivity', 'skill', 'career'
+];
+
+// Default learning mode settings
+const DEFAULT_LEARNING_MODE = {
+  enabled: false,
+  enabledUntil: 0,
+  durationMinutes: 120  // 2 hours default
+};
+
 // Initialize extension
-chrome.runtime.onInstalled.addListener(async () => {
+chrome.runtime.onInstalled.addListener(async (details) => {
   console.log('2 mins only extension installed');
   
   // Get existing configurations
-  const result = await chrome.storage.sync.get([STORAGE_KEY, COOLDOWN_SETTINGS_KEY]);
+  const result = await chrome.storage.sync.get([
+    STORAGE_KEY, 
+    COOLDOWN_SETTINGS_KEY,
+    WHITELIST_CHANNELS_KEY,
+    WHITELIST_VIDEOS_KEY,
+    LEARNING_MODE_KEY
+  ]);
+  
   const existingSites = result[STORAGE_KEY] || {};
   const existingCooldown = result[COOLDOWN_SETTINGS_KEY] || {};
+  const existingChannels = result[WHITELIST_CHANNELS_KEY] || [];
+  const existingVideos = result[WHITELIST_VIDEOS_KEY] || [];
+  const existingLearningMode = result[LEARNING_MODE_KEY] || {};
   
-  // Merge default sites with existing ones (new defaults won't override existing user configs)
+  // Merge defaults with existing configurations
   const mergedSites = { ...DEFAULT_SITES, ...existingSites };
   const mergedCooldown = { ...DEFAULT_COOLDOWN_SETTINGS, ...existingCooldown };
+  const mergedChannels = [...new Set([...DEFAULT_WHITELIST_CHANNELS, ...existingChannels])];
+  const mergedVideos = [...new Set([...DEFAULT_WHITELIST_VIDEOS, ...existingVideos])];
+  const mergedLearningMode = { ...DEFAULT_LEARNING_MODE, ...existingLearningMode };
   
   // Update storage with merged configurations
   await chrome.storage.sync.set({
     [STORAGE_KEY]: mergedSites,
-    [COOLDOWN_SETTINGS_KEY]: mergedCooldown
+    [COOLDOWN_SETTINGS_KEY]: mergedCooldown,
+    [WHITELIST_CHANNELS_KEY]: mergedChannels,
+    [WHITELIST_VIDEOS_KEY]: mergedVideos,
+    [LEARNING_MODE_KEY]: mergedLearningMode
   });
   
-  // Clear any existing active timers and blocked sites
+  // Always clear active timers on startup (they don't persist across browser restarts)
   await chrome.storage.local.set({
-    [ACTIVE_TIMERS_KEY]: {},
-    [BLOCKED_SITES_KEY]: {}
+    [ACTIVE_TIMERS_KEY]: {}
   });
+  
+  // Only clear blocked sites on first installation, preserve them on updates/reloads
+  if (details.reason === 'install') {
+    // First time installation - clear blocked sites
+    await chrome.storage.local.set({
+      [BLOCKED_SITES_KEY]: {}
+    });
+  }
+  // On 'update' or 'startup', blocked sites are preserved to maintain cooldown periods
+});
+
+// Handle extension startup (when browser starts)
+chrome.runtime.onStartup.addListener(async () => {
+  console.log('Extension startup - clearing active timers but preserving cooldowns');
+  
+  // Clear active timers on startup (they don't persist across browser restarts)
+  await chrome.storage.local.set({
+    [ACTIVE_TIMERS_KEY]: {}
+  });
+  
+  // Blocked sites are preserved to maintain cooldown periods across browser restarts
 });
 
 // Monitor tab updates (navigation to new URLs)
@@ -97,7 +170,23 @@ async function handleTabNavigation(tabId, url) {
     const matchingSite = findMatchingSite(hostname, pathname, siteConfigs);
     
     if (matchingSite) {
-      const timerMinutes = siteConfigs[matchingSite];
+      // Check if content should bypass timer (whitelist or learning mode)
+      const shouldBypass = await shouldBypassTimer(url, urlObj);
+      
+      if (shouldBypass.bypass) {
+        console.log(`Bypassing timer for ${matchingSite}: ${shouldBypass.reason}`);
+        await clearTimerForTab(tabId);
+        return;
+      }
+      
+      // Apply smart timer adjustment based on content type
+      let timerMinutes = siteConfigs[matchingSite];
+      const smartAdjustment = await getSmartTimerAdjustment(url, urlObj);
+      if (smartAdjustment.extended) {
+        timerMinutes = Math.max(timerMinutes, smartAdjustment.minutes);
+        console.log(`Extended timer to ${timerMinutes} minutes: ${smartAdjustment.reason}`);
+      }
+      
       await startTimerForTab(tabId, matchingSite, timerMinutes);
       console.log(`Started ${timerMinutes} minute timer for ${matchingSite} (tab ${tabId})`);
     } else {
@@ -290,6 +379,41 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if (request.action === 'getBlockedSites') {
     getBlockedSites().then(sendResponse);
     return true;
+  } else if (request.action === 'getWhitelistChannels') {
+    getWhitelistChannels().then(sendResponse);
+    return true;
+  } else if (request.action === 'updateWhitelistChannels') {
+    updateWhitelistChannels(request.channels).then(() => {
+      sendResponse({ success: true });
+    });
+    return true;
+  } else if (request.action === 'getWhitelistVideos') {
+    getWhitelistVideos().then(sendResponse);
+    return true;
+  } else if (request.action === 'updateWhitelistVideos') {
+    updateWhitelistVideos(request.videos).then(() => {
+      sendResponse({ success: true });
+    });
+    return true;
+  } else if (request.action === 'getLearningMode') {
+    getLearningMode().then(sendResponse);
+    return true;
+  } else if (request.action === 'updateLearningMode') {
+    updateLearningMode(request.settings).then(() => {
+      sendResponse({ success: true });
+    });
+    return true;
+  } else if (request.action === 'addCurrentVideoToWhitelist') {
+    // Special action to whitelist the current video
+    (async () => {
+      const videos = await getWhitelistVideos();
+      if (!videos.includes(request.url)) {
+        videos.push(request.url);
+        await updateWhitelistVideos(videos);
+      }
+      sendResponse({ success: true });
+    })();
+    return true;
   }
 });
 
@@ -453,5 +577,168 @@ async function getBlockedSites() {
 async function updateCooldownSettings(settings) {
   await chrome.storage.sync.set({
     [COOLDOWN_SETTINGS_KEY]: settings
+  });
+}
+
+// Smart whitelist and learning mode functions
+
+// Check if content should bypass timer
+async function shouldBypassTimer(url, urlObj) {
+  try {
+    // Check learning mode first
+    const learningMode = await getLearningMode();
+    if (learningMode.enabled && Date.now() < learningMode.enabledUntil) {
+      return { bypass: true, reason: 'Learning mode active' };
+    }
+    
+    // Check video whitelist
+    const whitelistVideos = await getWhitelistVideos();
+    const normalizedUrl = normalizeVideoUrl(url);
+    if (whitelistVideos.some(video => normalizeVideoUrl(video) === normalizedUrl)) {
+      return { bypass: true, reason: 'Whitelisted video' };
+    }
+    
+    // Check channel whitelist
+    const whitelistChannels = await getWhitelistChannels();
+    const channelPath = extractChannelPath(urlObj);
+    if (channelPath && whitelistChannels.some(channel => channel.includes(channelPath))) {
+      return { bypass: true, reason: 'Whitelisted channel' };
+    }
+    
+    return { bypass: false };
+  } catch (error) {
+    console.error('Error checking bypass conditions:', error);
+    return { bypass: false };
+  }
+}
+
+// Get smart timer adjustment based on content analysis
+async function getSmartTimerAdjustment(url, urlObj) {
+  try {
+    // For now, we'll use URL analysis. In the future, we could analyze page title/content
+    const isEducational = await isEducationalContent(url, urlObj);
+    
+    if (isEducational) {
+      return { 
+        extended: true, 
+        minutes: 30, // Extended time for educational content
+        reason: 'Educational content detected' 
+      };
+    }
+    
+    return { extended: false };
+  } catch (error) {
+    console.error('Error getting smart timer adjustment:', error);
+    return { extended: false };
+  }
+}
+
+// Detect if content is educational based on keywords and patterns
+async function isEducationalContent(url, urlObj) {
+  try {
+    // Check URL parameters and path for educational indicators
+    const urlString = url.toLowerCase();
+    const searchParams = urlObj.searchParams;
+    
+    // Check for educational keywords in URL
+    const hasEducationalKeywords = EDUCATIONAL_KEYWORDS.some(keyword => 
+      urlString.includes(keyword.toLowerCase())
+    );
+    
+    if (hasEducationalKeywords) {
+      return true;
+    }
+    
+    // Check for educational playlists
+    const playlistId = searchParams.get('list');
+    if (playlistId && await isEducationalPlaylist(playlistId)) {
+      return true;
+    }
+    
+    // Future enhancement: Could analyze page title and description
+    // For now, return false for non-obvious cases
+    return false;
+  } catch (error) {
+    console.error('Error detecting educational content:', error);
+    return false;
+  }
+}
+
+// Check if playlist is educational (basic heuristics)
+async function isEducationalPlaylist(playlistId) {
+  // Educational playlists often have certain patterns
+  const educationalPatterns = [
+    'course', 'tutorial', 'lesson', 'learn', 'education', 
+    'training', 'masterclass', 'workshop', 'study'
+  ];
+  
+  // This is a simplified check - in a full implementation, 
+  // we might cache playlist info or use YouTube API
+  return educationalPatterns.some(pattern => 
+    playlistId.toLowerCase().includes(pattern)
+  );
+}
+
+// Normalize video URL for comparison
+function normalizeVideoUrl(url) {
+  try {
+    const urlObj = new URL(url);
+    const videoId = urlObj.searchParams.get('v');
+    if (videoId) {
+      return `https://www.youtube.com/watch?v=${videoId}`;
+    }
+    return url;
+  } catch (error) {
+    return url;
+  }
+}
+
+// Extract channel path from URL
+function extractChannelPath(urlObj) {
+  const pathname = urlObj.pathname;
+  
+  // Handle different YouTube channel URL formats
+  if (pathname.startsWith('/c/')) {
+    return pathname.substring(3);
+  } else if (pathname.startsWith('/channel/')) {
+    return pathname.substring(9);
+  } else if (pathname.startsWith('/@')) {
+    return pathname.substring(2);
+  }
+  
+  return null;
+}
+
+// Storage utility functions for whitelist and learning mode
+async function getWhitelistChannels() {
+  const result = await chrome.storage.sync.get(WHITELIST_CHANNELS_KEY);
+  return result[WHITELIST_CHANNELS_KEY] || [];
+}
+
+async function getWhitelistVideos() {
+  const result = await chrome.storage.sync.get(WHITELIST_VIDEOS_KEY);
+  return result[WHITELIST_VIDEOS_KEY] || [];
+}
+
+async function getLearningMode() {
+  const result = await chrome.storage.sync.get(LEARNING_MODE_KEY);
+  return result[LEARNING_MODE_KEY] || DEFAULT_LEARNING_MODE;
+}
+
+async function updateWhitelistChannels(channels) {
+  await chrome.storage.sync.set({
+    [WHITELIST_CHANNELS_KEY]: channels
+  });
+}
+
+async function updateWhitelistVideos(videos) {
+  await chrome.storage.sync.set({
+    [WHITELIST_VIDEOS_KEY]: videos
+  });
+}
+
+async function updateLearningMode(settings) {
+  await chrome.storage.sync.set({
+    [LEARNING_MODE_KEY]: settings
   });
 }

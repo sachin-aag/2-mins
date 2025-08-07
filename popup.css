@@ -223,6 +223,154 @@ h3 {
   text-align: center;
 }
 
+/* Learning Mode Section */
+.learning-section {
+  margin-bottom: 24px;
+}
+
+.learning-controls {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  padding: 16px;
+}
+
+.learning-mode-toggle {
+  margin-bottom: 12px;
+}
+
+.btn-learning {
+  background: #28a745;
+  color: white;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.btn-learning:hover {
+  background: #218838;
+}
+
+.btn-learning.active {
+  background: #dc3545;
+}
+
+.btn-learning.active:hover {
+  background: #c82333;
+}
+
+.learning-status {
+  font-size: 12px;
+  color: #28a745;
+  font-weight: 500;
+  text-align: center;
+}
+
+.quick-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-small {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+/* Whitelist Section */
+.whitelist-section {
+  margin-bottom: 24px;
+}
+
+.whitelist-tabs {
+  display: flex;
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 2px;
+  margin-bottom: 16px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6c757d;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  background: white;
+  color: #2c3e50;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.tab-content {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  padding: 16px;
+}
+
+.add-whitelist {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.add-whitelist .input-field {
+  flex: 1;
+}
+
+.whitelist-list {
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.whitelist-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f8f9fa;
+  font-size: 12px;
+}
+
+.whitelist-item:last-child {
+  border-bottom: none;
+}
+
+.whitelist-url {
+  flex: 1;
+  color: #2c3e50;
+  word-break: break-all;
+  margin-right: 8px;
+}
+
+.whitelist-remove {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.whitelist-remove:hover {
+  background: #c82333;
+}
+
+.no-whitelist {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  padding: 16px;
+  font-size: 12px;
+}
+
 /* Cooldown Section */
 .cooldown-section {
   margin-bottom: 24px;
