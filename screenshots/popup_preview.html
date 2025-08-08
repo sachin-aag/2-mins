@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2 mins only — Popup Preview</title>
+  <link rel="stylesheet" href="../popup.css">
+  <style>
+    body { background: #f6f8fa; }
+  </style>
+  </head>
+<body>
+  <div class="container">
+    <header>
+      <h1>⏰ 2 mins only</h1>
+      <p class="subtitle">Manage your time on distracting websites</p>
+    </header>
+
+    <div class="status-section">
+      <h3>Active Timers</h3>
+      <div id="active-timers" class="active-timers">
+        <div class="timer-item">
+          <div class="timer-info">
+            <div class="timer-site">youtube.com/shorts</div>
+            <div class="timer-remaining">1 min remaining</div>
+          </div>
+        </div>
+        <div class="timer-item">
+          <div class="timer-info">
+            <div class="timer-site">twitter.com</div>
+            <div class="timer-remaining">3 min remaining</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="config-section">
+      <h3>Site Configurations</h3>
+      <div class="add-site">
+        <input type="text" id="site-input" placeholder="e.g., youtube.com" class="input-field" value="reddit.com">
+        <input type="number" id="minutes-input" placeholder="Minutes" min="1" max="120" class="input-field minutes-input" value="10">
+        <button id="add-site-btn" class="btn btn-primary">Add Site</button>
+      </div>
+
+      <div id="site-list" class="site-list">
+        <div class="site-item">
+          <div class="site-info">
+            <div class="site-name">youtube.com/shorts</div>
+            <div class="site-timer">1 minute</div>
+          </div>
+          <div class="site-actions">
+            <input type="number" class="edit-input" value="1" min="1" max="120">
+            <button class="btn btn-danger">Remove</button>
+          </div>
+        </div>
+        <div class="site-item">
+          <div class="site-info">
+            <div class="site-name">youtube.com</div>
+            <div class="site-timer">5 minutes</div>
+          </div>
+          <div class="site-actions">
+            <input type="number" class="edit-input" value="5" min="1" max="120">
+            <button class="btn btn-danger">Remove</button>
+          </div>
+        </div>
+        <div class="site-item">
+          <div class="site-info">
+            <div class="site-name">twitter.com</div>
+            <div class="site-timer">3 minutes</div>
+          </div>
+          <div class="site-actions">
+            <input type="number" class="edit-input" value="3" min="1" max="120">
+            <button class="btn btn-danger">Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="learning-section">
+      <h3>Smart Learning Mode</h3>
+      <div class="learning-controls">
+        <div class="learning-mode-toggle">
+          <button id="learning-mode-btn" class="btn btn-learning active">Disable Learning Mode</button>
+          <div id="learning-status" class="learning-status">Learning mode active: <span id="learning-remaining">118 minutes</span></div>
+        </div>
+        <div class="quick-actions">
+          <button id="add-current-video-btn" class="btn btn-secondary btn-small">+ Whitelist Current Video</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="whitelist-section">
+      <h3>Educational Whitelists</h3>
+      <div class="whitelist-tabs">
+        <button class="tab-btn active" data-tab="channels">Channels</button>
+        <button class="tab-btn" data-tab="videos">Videos</button>
+      </div>
+
+      <div class="tab-content" id="channels-tab">
+        <div class="add-whitelist">
+          <input type="text" id="channel-input" placeholder="e.g., youtube.com/c/khanacademy" class="input-field">
+          <button id="add-channel-btn" class="btn btn-primary btn-small">Add Channel</button>
+        </div>
+        <div id="channels-list" class="whitelist-list">
+          <div class="whitelist-item">
+            <span class="whitelist-url">youtube.com/c/khanacademy</span>
+            <button class="whitelist-remove">Remove</button>
+          </div>
+          <div class="whitelist-item">
+            <span class="whitelist-url">youtube.com/@3blue1brown</span>
+            <button class="whitelist-remove">Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cooldown-section">
+      <h3>Cooldown Settings</h3>
+      <div class="cooldown-controls">
+        <label class="checkbox-label">
+          <input type="checkbox" id="cooldown-enabled" class="checkbox" checked>
+          <span class="checkmark"></span>
+          Block sites after timer expires
+        </label>
+        <div class="cooldown-duration">
+          <label for="cooldown-minutes">Block duration:</label>
+          <input type="number" id="cooldown-minutes" min="5" max="480" value="60" class="input-field duration-input">
+          <span class="duration-unit">minutes</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="options-btn" class="btn btn-secondary">More Options</button>
+    </div>
+  </div>
+</body>
+</html>
+
