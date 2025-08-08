@@ -296,13 +296,14 @@ async function closeTabIfStillOnSite(tabId) {
       
       if (currentMatch === timerSite) {
         // Still on the same specific site/path that triggered the timer
-        await chrome.tabs.remove(tabId);
-        console.log(`Closed tab ${tabId} after timer expired for ${timerSite}`);
-        
-        // Add site to cooldown block list
+        // Add site to cooldown block list first so the blocked page can show the countdown
         await addSiteToCooldown(timerSite);
-        
-        // Show notification
+
+        // Redirect the user to the focus plan page instead of closing the tab
+        await redirectToBlockedPage(tabId, tab.url);
+        console.log(`Redirected tab ${tabId} to plan page after timer expired for ${timerSite}`);
+
+        // Show notification/log
         await showNotification(timerSite, activeTimers[tabId].minutes);
       }
     }

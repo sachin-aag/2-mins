@@ -1,10 +1,10 @@
 # 2 mins only - Chrome Extension
 
-A Chrome extension that helps you manage your time on distracting websites by automatically closing tabs after a configurable time limit.
+A Chrome extension that helps you manage your time on distracting websites by timing your sessions and redirecting you to a focus plan page when time is up.
 
 ## 🚀 Features
 
-- ⏰ **Automatic Tab Closure**: Set custom time limits (1-120 minutes) for specific websites
+- ⏰ **Timed Sessions + Focus Redirect**: Set custom time limits (1-120 minutes) for specific websites. When time is up, get redirected to a focus plan page.
 - 🎯 **Site-Specific Timers**: Different time limits for different websites
 - 🚫 **Cooldown Period**: Block sites for configurable time (5-480 minutes) after timer expires
 - 📝 **Productivity Prompts**: Get motivated with goal-setting when sites are blocked
@@ -71,8 +71,8 @@ The extension comes pre-configured with these common distracting websites:
 ### How Timers Work
 1. When you visit a configured website, a timer starts automatically
 2. The extension badge shows the number of active timers
-3. If you're still on the site when the timer expires, the tab closes automatically
-4. **NEW**: After closure, the site enters a cooldown period (default: 1 hour)
+3. If you're still on the site when the timer expires, you'll be redirected to the focus plan page
+4. The site enters a cooldown period (default: 1 hour)
 5. During cooldown, attempts to visit the site redirect to a productivity page
 6. You can set goals and plans during the cooldown period
 7. Switching tabs or navigating away pauses the timer for that site
@@ -101,7 +101,7 @@ chrome-extension/
 ```
 
 ### Permissions Used
-- `tabs`: Monitor and close tabs
+- `tabs`: Monitor and update tabs (redirect to plan page)
 - `storage`: Save site configurations
 - `activeTab`: Access current tab information
 - `alarms`: Set timers for automatic tab closure

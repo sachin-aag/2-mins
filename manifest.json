@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "2 mins only",
   "version": "1.0.0",
-  "description": "Automatically closes tabs after a configurable time limit to help you stay focused.",
+  "description": "Helps you stay focused by timing distracting sites and redirecting you to a focus plan page when time is up.",
   
   "permissions": [
     "tabs",
