@@ -34,6 +34,50 @@
       </div>
     </div>
 
+    <div class="learning-section">
+      <h3>Smart Learning Mode</h3>
+      <div class="learning-controls">
+        <div class="learning-mode-toggle">
+          <button id="learning-mode-btn" class="btn btn-learning">Enable Learning Mode (2h)</button>
+          <div id="learning-status" class="learning-status hidden">
+            Learning mode active: <span id="learning-remaining"></span>
+          </div>
+        </div>
+        <div class="quick-actions">
+          <button id="add-current-video-btn" class="btn btn-secondary btn-small">+ Whitelist Current Video</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="whitelist-section">
+      <h3>Educational Whitelists</h3>
+      
+      <div class="whitelist-tabs">
+        <button class="tab-btn active" data-tab="channels">Channels</button>
+        <button class="tab-btn" data-tab="videos">Videos</button>
+      </div>
+      
+      <div class="tab-content" id="channels-tab">
+        <div class="add-whitelist">
+          <input type="text" id="channel-input" placeholder="e.g., youtube.com/c/khanacademy" class="input-field">
+          <button id="add-channel-btn" class="btn btn-primary btn-small">Add Channel</button>
+        </div>
+        <div id="channels-list" class="whitelist-list">
+          <!-- Channels will be populated by JavaScript -->
+        </div>
+      </div>
+      
+      <div class="tab-content hidden" id="videos-tab">
+        <div class="add-whitelist">
+          <input type="text" id="video-input" placeholder="e.g., https://youtube.com/watch?v=..." class="input-field">
+          <button id="add-video-btn" class="btn btn-primary btn-small">Add Video</button>
+        </div>
+        <div id="videos-list" class="whitelist-list">
+          <!-- Videos will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+
     <div class="cooldown-section">
       <h3>Cooldown Settings</h3>
       <div class="cooldown-controls">
